@@ -1,3 +1,10 @@
+"""
+``sphinx_ros`` module
+=====================
+
+Sphinx extension adding several directives to document ROS packages.
+"""
+
 from sphinx.domains import StandardDomain
 from .domain import RosDomain
 

@@ -1,3 +1,9 @@
+"""
+``domain`` module
+=================
+
+
+"""
 from six import iteritems
 from docutils import nodes
 from sphinx.domains import Domain, ObjType
@@ -20,7 +26,7 @@ class RosDomain(Domain):
         'pkg': RosXRefRole(),
         'msg': RosXRefRole(),
         'srv': RosXRefRole(),
-        'action': RosXRefRole()
+        'act': RosXRefRole()
     }
     directives = {
         'package':          RosPackageDirective,
@@ -156,8 +162,10 @@ class RosDomain(Domain):
         # make a duplicate entry in 'objects' to facilitate searching for the
         # package in RosDomain.find_obj()
         self.data['objects'][name] = (self.env.docname, 'package')
+        return anchor
 
     def add_message(self, name, deprecated):
         # name -> document name, anchor, priority, deprecated
         self.data['messages'][name] = (self.env.docname, name, 0, deprecated)
         self.data['objects'][name] = (self.env.docname, 'message')
+        return name

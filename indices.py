@@ -1,3 +1,9 @@
+"""
+``indices`` module
+==================
+
+
+"""
 from six import iteritems
 from sphinx.domains import Index
 

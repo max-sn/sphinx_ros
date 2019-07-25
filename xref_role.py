@@ -1,3 +1,9 @@
+"""
+``xref_role`` module
+====================
+
+
+"""
 import re
 
 from docutils import nodes

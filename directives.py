@@ -1,3 +1,10 @@
+"""
+``directives`` module
+=====================
+
+
+"""
+
 import re
 
 from docutils import nodes
@@ -240,17 +247,18 @@ class RosPackageDirective(Directive):
         ret = []
         if not noindex:
             ros_domain = env.get_domain('ros')
-            ros_domain.add_package(pkgname, 'deprecated' in self.options)
+            anchor = ros_domain.add_package(pkgname,
+                                            'deprecated' in self.options)
             # env.domaindata['ros']['packages'][pkgname] = \
             #     (env.docname, 'deprecated' in self.options)
             # env.domaindata['ros']['objects'][pkgname] = \
             #     (env.docname, 'package')
-            targetnode = nodes.target('', '', ids=['package-' + pkgname])
+            targetnode = nodes.target('', '', ids=[anchor])
             self.state.document.note_explicit_target(targetnode)
             ret.append(targetnode)
             indextext = '{} (package)'.format(pkgname)
             inode = addnodes.index(entries=[('single', indextext,
-                                             'package-' + pkgname, '')])
+                                             anchor, '')])
             ret.append(inode)
         return ret
 
