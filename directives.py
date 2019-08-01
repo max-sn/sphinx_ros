@@ -6,6 +6,7 @@
 """
 
 import re
+import sphinx
 
 from docutils import nodes
 from docutils.parsers.rst import directives, Directive
@@ -21,13 +22,23 @@ ros_sig_re = re.compile(
      ''', re.VERBOSE)
 
 
+def name_to_key(name):
+    return unicode(name[0].upper())
+
+
 # This override allows our inline type specifiers to behave like :class: link
 # when it comes to handling "." and "~" prefixes.
 class RosXRefMixin(object):
     def make_xref(self, rolename, domain, target, innernode=nodes.emphasis,
-                  contnode=None):
-        result = super(RosXRefMixin, self).make_xref(rolename, domain, target,
-                                                     innernode, contnode)
+                  contnode=None, env=None):
+        if sphinx.version_info[:2] >= (1, 5):
+            result = super(RosXRefMixin, self).make_xref(rolename, domain,
+                                                         target, innernode,
+                                                         contnode, env)
+        else:
+            result = super(RosXRefMixin, self).make_xref(rolename, domain,
+                                                         target, innernode,
+                                                         contnode)
         result['refspecific'] = True
         if target.startswith(('.', '~')):
             prefix, result['reftarget'] = target[0], target[1:]
@@ -149,9 +160,13 @@ class RosObject(ObjectDescription):
             # objects[fullname] = (self.env.docname, self.objtype)
 
             indextext = self.get_index_text(pkgname, name)
+            if sphinx.version_info[:2] >= (1, 4):
+                entry = ('single', indextext, fullname, '',
+                         name_to_key(name[0]))
+            else:
+                entry = ('single', indextext, fullname, '')
             if indextext:
-                self.indexnode['entries'].append(('single', indextext,
-                                                  fullname, ''))
+                self.indexnode['entries'].append(entry)
 
 
 class RosField(RosXRefMixin, Field):
@@ -257,8 +272,13 @@ class RosPackageDirective(Directive):
             self.state.document.note_explicit_target(targetnode)
             ret.append(targetnode)
             indextext = '{} (package)'.format(pkgname)
-            inode = addnodes.index(entries=[('single', indextext,
-                                             anchor, '')])
+            if sphinx.version_info[:2] >= (1, 4):
+                entry = ('single', indextext, anchor, '',
+                         name_to_key(pkgname))
+            else:
+                entry = ('single', indextext, anchor, '')
+
+            inode = addnodes.index(entries=[entry])
             ret.append(inode)
         return ret
 

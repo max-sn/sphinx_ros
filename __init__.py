@@ -5,7 +5,10 @@
 Sphinx extension adding several directives to document ROS packages.
 """
 
-from sphinx.domains import StandardDomain
+try:
+    from sphinx.domains import StandardDomain
+except ImportError:
+    from sphinx.domains.std import StandardDomain
 from .domain import RosDomain
 
 
