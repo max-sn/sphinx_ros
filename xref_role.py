@@ -42,7 +42,7 @@ class RosXRefRole(XRefRole):
             if node['reftarget'] in self.ros_msg_primitives:
                 # If the target is a ROS message primitive then don't add a
                 # link.
-                node = nodes.literal(node['reftarget'], node['reftarget'])
+                node = nodes.literal(node.astext(), node.astext())
             elif '/' in node['reftarget']:
                 # If the target contains a forward slash, it is either a
                 # reference to a standard ROS message type or a custom message
@@ -56,8 +56,7 @@ class RosXRefRole(XRefRole):
                         '/api/{}/html/{}/{}.html'.format(pkg, obj_type, obj)
                     ref_node = nodes.reference()
                     ref_node['refuri'] = target
-                    text_node = nodes.literal(node['reftarget'],
-                                              node['reftarget'])
+                    text_node = nodes.literal(node.astext(), node.astext())
                     text_node['classes'] = ['xref', 'ros', 'ros-' + obj_type]
                     ref_node += text_node
                     node = ref_node
