@@ -26,6 +26,18 @@ def name_to_key(name):
     return unicode(name[0].upper())
 
 
+def split_pkg_object(signature, obj_type):
+    try:
+        pkg, object_ = signature.split('.' + obj_type + '.')
+    except ValueError:
+        try:
+            pkg, object_ = signature.split('/')
+        except ValueError:
+            pkg = ''
+            object_ = signature
+    return pkg, object_
+
+
 # This override allows our inline type specifiers to behave like :class: link
 # when it comes to handling "." and "~" prefixes.
 class RosXRefMixin(object):
@@ -182,6 +194,29 @@ class RosType(RosObject):
     Super class for messages, services, and actions.
     """
 
+    def handle_signature(self, sig, signode):
+        pkg, name = split_pkg_object(sig, self.get_object_type_prefix())
+        env_pkg = self.options.get('package',
+                                   self.env.ref_context.get('ros:package'))
+        if not pkg == env_pkg:
+            # TODO: issue warning that message is in wrong package
+            pass
+
+        name_prefix = '.'.join([pkg, self.get_object_type_prefix(), ''])
+        fullname = name_prefix + name
+
+        signode['package'] = pkg and pkg or env_pkg
+        signode['fullname'] = fullname
+
+        sig_prefix = self.get_signature_prefix(sig)
+        signode += addnodes.desc_annotation(sig_prefix, sig_prefix)
+        if not pkg and self.env.config.ros_add_package_names:
+            signode += addnodes.desc_addname(env_pkg + '/', env_pkg + '/')
+        elif self.env.config.ros_add_package_names:
+            signode += addnodes.desc_addname(pkg + '/', pkg + '/')
+        signode += addnodes.desc_name(name, name)
+        return fullname, name_prefix, self.objtype, name
+
     def get_object_type_prefix(self):
         if self.objtype == 'message':
             return 'msg'
@@ -195,16 +230,42 @@ class RosType(RosObject):
 
     def get_index_text(self, pkgname, name):
         fullname = name[0]
+        name_prefix = name[1]
         obj_type = name[2]
+        newname = name[3]
         if pkgname:
-            if fullname.startswith(pkgname):
-                newname = re.sub(r'^' + pkgname + r'\.', '', fullname)
-                if newname.startswith(obj_type):
-                    newname = re.sub(r'^' + obj_type + r'\.', '', newname)
-            return '{} ({} in package {})'.format(newname, self.objtype,
+            text = '{} ({} in package {})'.format(newname, self.objtype,
                                                   pkgname)
         else:
-            return '{} ({})'.format(fullname, self.objtype)
+            text = '{} ({})'.format(fullname, self.objtype)
+        print(text)
+        return text
+
+    def add_target_and_index(self, name, sig, signode):
+        pkgname = self.options.get('package',
+                                   self.env.ref_context.get('ros:package'))
+
+        fullname = name[0]
+        obj_type = name[2]
+        short_name = name[3]
+        # Note target
+        if fullname not in self.state.document.ids:
+            signode['names'].append(fullname)
+            signode['ids'].append(fullname)
+            signode['first'] = (not self.names)
+            self.state.document.note_explicit_target(signode)
+
+            self.add_object_to_domain_data(fullname, obj_type)
+
+            indextext = self.get_index_text(pkgname, name)
+            if sphinx.version_info[:2] >= (1, 4):
+                entry = [('single', indextext, short_name, '',
+                         name_to_key(short_name[0]))]
+            else:
+                entry = [('single', indextext, short_name, '')]
+            if indextext:
+                self.indexnode['entries'] += entry
+                # self.indexnode['entries'].append(entry)
 
     def add_object_to_domain_data(self, fullname, obj_type):
         objects = self.env.domaindata['ros']['objects']
