@@ -10,3 +10,5 @@ python:
   version: 2.7
   install:
     - requirements: docs/requirements.txt
+    - method: pip
+      path: .

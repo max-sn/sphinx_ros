@@ -15,6 +15,7 @@ Sphinx |ROS| extension
 
 :Author: M.J.W. Snippe
 :Version: |version|
+:Release: |release|
 
 .. toctree::
   :maxdepth: 2
