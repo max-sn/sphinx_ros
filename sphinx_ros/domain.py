@@ -16,6 +16,9 @@ from .directives import RosPackageDirective, RosCurrentPackageDirective, \
     RosMessageDirective, RosActionDirective, RosServiceDirective
 from .indices import RosPackageIndex, RosMessageIndex
 
+from .autoros.directives import RosAutoActionDirective, \
+    RosAutoMessageDirective, RosAutoServiceDirective, RosAutoPackageDirective
+
 
 class RosDomain(Domain):
     """
@@ -39,7 +42,11 @@ class RosDomain(Domain):
         'currentpackage':   RosCurrentPackageDirective,
         'message':          RosMessageDirective,
         'service':          RosServiceDirective,
-        'action':           RosActionDirective
+        'action':           RosActionDirective,
+        'autopackage':      RosAutoPackageDirective,
+        'automessage':      RosAutoMessageDirective,
+        'autoservice':      RosAutoServiceDirective,
+        'autoaction':       RosAutoActionDirective,
     }
     initial_data = {
         'objects': {},   # fullname -> docname, objtype
