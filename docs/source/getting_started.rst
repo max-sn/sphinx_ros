@@ -94,6 +94,27 @@ Directives
   result. ``:feedback_param <name>:`` and ``:feedback_paramtype <name>:`` do
   the same for the action's feedback.
 
+.. rst:directive:: .. ros:automessage:: message
+
+  .. todo:: Add description.
+
+  .. versionadded:: 0.2
+
+.. rst:directive:: .. ros:autoservice:: service
+
+  .. todo:: Add description.
+
+  .. versionadded:: 0.2
+
+.. rst:directive:: .. ros:autoaction:: action
+
+  .. todo:: Add description.
+
+  .. versionadded:: 0.2
+
+.. rst:directive:: .. ros:autopackage:: package
+
+  .. versionadded:: 0.2
 
 =====
 Roles
