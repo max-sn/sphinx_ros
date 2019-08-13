@@ -25,6 +25,7 @@ Sphinx |ROS| extension
 
   getting_started
   modules
+  changelog
 
 
 .. only:: html
