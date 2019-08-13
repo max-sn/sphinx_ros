@@ -16,7 +16,7 @@ def setup(app):
     app.add_domain(RosDomain)
 
     app.add_config_value('ros_add_package_names', True, 'html')
-    app.add_config_value('ros_msg_reference_version', 'kinetic', 'html')
+    app.add_config_value('ros_msg_reference_version', 'melodic', 'html')
 
     StandardDomain.initial_data['labels'].\
         update(RosDomain.initial_data['labels'])
