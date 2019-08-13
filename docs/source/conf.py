@@ -16,6 +16,8 @@ import sys
 import os
 import subprocess
 
+from pkg_resources import get_distribution
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -78,7 +80,7 @@ author = u'M.J.W. Snippe'
 # built documents.
 #
 # The full version, including alpha/beta/rc tags.
-release = '0.0.1a0'
+release = get_distribution('sphinx_ros').version
 # The short X.Y version
 version = '.'.join(release.split('.')[:2])
 # version = subprocess.check_output(["git", "--git-dir",
