@@ -5,11 +5,19 @@
 Sphinx extension adding several directives to document ROS packages.
 """
 
+from pkg_resources import get_distribution, DistributionNotFound
+
 try:
     from sphinx.domains import StandardDomain
 except ImportError:
     from sphinx.domains.std import StandardDomain
 from .domain import RosDomain
+
+try:
+    __version__ = get_distribution(__name__).version
+except DistributionNotFound:
+    # Package is not installed
+    __version__ = 'unknown'
 
 
 def setup(app):
@@ -32,7 +40,7 @@ def setup(app):
         update(RosDomain.initial_data['anonlabels'])
 
     return {
-        'version': '0.1',
+        'version': __version__,
         'parallel_read_safe': False,
         'parallel_write_safe': True
     }
