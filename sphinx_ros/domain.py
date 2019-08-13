@@ -1,7 +1,10 @@
 """
-``domain`` module
-=================
+``sphinx_ros.domain`` module
+============================
 
+This module defines the ROS domain. It defines three object types (messages,
+services, and actions) and registers the roles and directives in the Sphinx
+application.
 """
 
 from six import iteritems
@@ -15,6 +18,9 @@ from .indices import RosPackageIndex, RosMessageIndex
 
 
 class RosDomain(Domain):
+    """
+    The actual domain class.
+    """
     name = 'ros'
     label = 'ROS'
     object_types = {
@@ -97,8 +103,6 @@ class RosDomain(Domain):
 
     def resolve_xref(self, env, fromdocname, builder, type, target, node,
                      contnode):
-        """
-        """
         pkgname = node.get('ros:package')
         searchmode = node.hasattr('refspecific') and 1 or 0
 
@@ -158,6 +162,14 @@ class RosDomain(Domain):
                 yield (refname, refname, type, docname, refname, 1)
 
     def add_package(self, name, deprecated):
+        """
+        Adds a package to the domain data.
+
+        :param str name: The name of the package
+        :param bool deprecated: Indicates whether the package is deprecated.
+        :return: The unique anchor of the package.
+        :rtype: str
+        """
         anchor = 'ros-pkg-{}'.format(name)
         # name -> document name, anchor, priority, deprecated
         self.data['packages'][name] = (self.env.docname, anchor, 0, deprecated)

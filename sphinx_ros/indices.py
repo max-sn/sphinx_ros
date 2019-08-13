@@ -1,14 +1,17 @@
 """
-``indices`` module
-==================
+``sphinx_ros.indices`` module
+=============================
 
-
+This modules defines the indices added to Sphinx.
 """
 from six import iteritems
 from sphinx.domains import Index
 
 
 class RosMessageIndex(Index):
+    """
+    Index listing the documented message types.
+    """
 
     name = 'msgindex'
     localname = 'Message Type Index'
@@ -52,6 +55,9 @@ class RosMessageIndex(Index):
 
 
 class RosPackageIndex(Index):
+    """
+    Index listing the documented packages.
+    """
 
     name = 'pkgindex'
     localname = 'Package Index'

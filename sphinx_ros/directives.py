@@ -1,6 +1,6 @@
 """
-``directives`` module
-=====================
+``sphinx_ros.directives`` module
+================================
 
 
 """

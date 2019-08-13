@@ -1,6 +1,6 @@
 """
-``xref_role`` module
-====================
+``sphinx_ros.xref_role`` module
+===============================
 
 
 """

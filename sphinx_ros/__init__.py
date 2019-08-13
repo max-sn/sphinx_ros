@@ -13,6 +13,14 @@ from .domain import RosDomain
 
 
 def setup(app):
+    """
+    Adds the ROS domain to the Sphinx application and the labels to the ROS
+    indices to the standard domain. It also adds the configuration values
+    :confval:`ros_add_package_names` and :confval:`ros_msg_reference_version`.
+
+    :param app: The Sphinx application
+    :type app: sphinx.application.Sphinx
+    """
     app.add_domain(RosDomain)
 
     app.add_config_value('ros_add_package_names', True, 'html')
