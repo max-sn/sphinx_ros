@@ -161,16 +161,6 @@ class RosObject(ObjectDescription):
 
             self.add_object_to_domain_data(fullname, obj_type)
 
-            # objects = self.env.domaindata['ros']['objects']
-            # if fullname in objects:
-            #     self.state_machine.reporter.warning(
-            #         'duplicate object description of %s, ' % fullname +
-            #         'other instance in ' +
-            #         self.env.doc2path(objects[fullname][0]) +
-            #         ', use :noindex: for one of them',
-            #         line=self.lineno)
-            # objects[fullname] = (self.env.docname, self.objtype)
-
             indextext = self.get_index_text(pkgname, name)
             if sphinx.version_info[:2] >= (1, 4):
                 entry = ('single', indextext, fullname, '',
@@ -202,18 +192,19 @@ class RosType(RosObject):
             # TODO: issue warning that message is in wrong package
             pass
 
-        name_prefix = '.'.join([pkg, self.get_object_type_prefix(), ''])
+        pkg_name = pkg and pkg or env_pkg
+
+        name_prefix = '.'.join([pkg_name, self.get_object_type_prefix(),
+                                ''])
         fullname = name_prefix + name
 
-        signode['package'] = pkg and pkg or env_pkg
+        signode['package'] = pkg_name
         signode['fullname'] = fullname
 
         sig_prefix = self.get_signature_prefix(sig)
         signode += addnodes.desc_annotation(sig_prefix, sig_prefix)
-        if not pkg and self.env.config.ros_add_package_names:
-            signode += addnodes.desc_addname(env_pkg + '/', env_pkg + '/')
-        elif self.env.config.ros_add_package_names:
-            signode += addnodes.desc_addname(pkg + '/', pkg + '/')
+        if self.env.config.ros_add_package_names:
+            signode += addnodes.desc_addname(pkg_name + '/', pkg_name + '/')
         signode += addnodes.desc_name(name, name)
         return fullname, name_prefix, self.objtype, name
 
@@ -324,10 +315,6 @@ class RosPackageDirective(Directive):
             ros_domain = env.get_domain('ros')
             anchor = ros_domain.add_package(pkgname,
                                             'deprecated' in self.options)
-            # env.domaindata['ros']['packages'][pkgname] = \
-            #     (env.docname, 'deprecated' in self.options)
-            # env.domaindata['ros']['objects'][pkgname] = \
-            #     (env.docname, 'package')
             targetnode = nodes.target('', '', ids=[anchor])
             self.state.document.note_explicit_target(targetnode)
             ret.append(targetnode)
