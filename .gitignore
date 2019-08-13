@@ -1,2 +1,11 @@
 .vscode
+docs/build/
+build/
+dist/
+prev_dist/
+sphinx_version_ref.egg-info
+Makefile
+make.bat
+.gitignore
+.eggs/
 *.pyc
