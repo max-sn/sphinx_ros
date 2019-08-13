@@ -235,29 +235,34 @@ htmlhelp_basename = 'sphinx_ros_docs'
 
 latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
-    # 'papersize': 'letterpaper',
+    'papersize': 'a4paper',
 
     # The font size ('10pt', '11pt' or '12pt').
-    # 'pointsize': '10pt',
+    'pointsize': '10pt',
 
     # Additional stuff for the LaTeX preamble.
     # 'preamble': '',
 
     # Latex figure (float) alignment
     # 'figure_align': 'htbp',
+    'sphinxsetup': 'shadowsize=0pt',
+    'fontpkg': r'''
+\usepackage{dejavu}
+\renewcommand*\familydefault{\sfdefault}
+'''
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'sphinx_ros_docs.tex', u'sphinx_ros Documentation',
+    (master_doc, 'sphinx_ros_docs.tex', u'sphinx\_ros Documentation',
      u'M.J.W. Snippe', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
-# latex_logo = None
+latex_logo = './_static/exports/ROSphinx.pdf'
 
 # For "manual" documents, if this is true, then toplevel headings are parts,
 # not chapters.
