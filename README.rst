@@ -13,10 +13,6 @@ sphinx_ros
   :target: https://sphinx-ros.readthedocs.io/en/latest/
   :alt: Documentation Status
 
-.. image:: https://img.shields.io/badge/buy%20me%20a%20coffee-3%24-blue
-  :target: https://paypal.me/maxsn0/3USD
-  :alt: Buy me a coffee
-
 This extension adds reStructuredText directives that can be used to document
 ROS packages.
 
