@@ -38,16 +38,33 @@ class RosXRefRole(XRefRole):
     def result_nodes(self, document, env, node, is_ref):
         if node['reftype'] in ['msg', 'srv', 'action']:
             obj_type = node['reftype']
+            title = node.astext()
+            target = node['reftarget']
+            if target.endswith('[]'):
+                target = target[:-2]
+
             # If reference to a ros message, service, or action
-            if node['reftarget'] in self.ros_msg_primitives:
+            if target in self.ros_msg_primitives:
                 # If the target is a ROS message primitive then don't add a
                 # link.
-                node = nodes.literal(node.astext(), node.astext())
-            elif '/' in node['reftarget']:
+                node = nodes.literal(title, title)
+            elif target == "Header":
+                # If the target is the message primitive "Header", then refer
+                # to that documentation.
+                target = 'http://docs.ros.org/' + \
+                         env.config.ros_msg_reference_version + \
+                         '/api/std_msgs/html/msg/Header.html'
+                ref_node = nodes.reference()
+                ref_node['refuri'] = target
+                text_node = nodes.literal(title, title)
+                text_node['classes'] = ['xref', 'ros', 'ros-' + obj_type]
+                ref_node += text_node
+                node = ref_node
+            elif '/' in target:
                 # If the target contains a forward slash, it is either a
                 # reference to a standard ROS message type or a custom message
                 # type.
-                pkg, obj = node['reftarget'].split('/')
+                pkg, obj = target.split('/')
                 if pkg in self.ros_api_pkgs:
                     # In the former case we link to the API documentation of
                     # ROS.
@@ -56,7 +73,7 @@ class RosXRefRole(XRefRole):
                         '/api/{}/html/{}/{}.html'.format(pkg, obj_type, obj)
                     ref_node = nodes.reference()
                     ref_node['refuri'] = target
-                    text_node = nodes.literal(node.astext(), node.astext())
+                    text_node = nodes.literal(title, title)
                     text_node['classes'] = ['xref', 'ros', 'ros-' + obj_type]
                     ref_node += text_node
                     node = ref_node
