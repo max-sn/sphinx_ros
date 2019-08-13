@@ -14,28 +14,14 @@ from sphinx import addnodes
 from sphinx.directives import ObjectDescription
 from sphinx.util.docfields import Field, TypedField
 
+from .util import name_to_key, split_pkg_object
+
 
 ros_sig_re = re.compile(
     r'''^((?:[^\.]*\.)*?)         # package name
          (?:(msg|srv|action)\.)?  # object type
          (\w+) \s*?$              # thing name
      ''', re.VERBOSE)
-
-
-def name_to_key(name):
-    return unicode(name[0].upper())
-
-
-def split_pkg_object(signature, obj_type):
-    try:
-        pkg, object_ = signature.split('.' + obj_type + '.')
-    except ValueError:
-        try:
-            pkg, object_ = signature.split('/')
-        except ValueError:
-            pkg = ''
-            object_ = signature
-    return pkg, object_
 
 
 # This override allows our inline type specifiers to behave like :class: link
