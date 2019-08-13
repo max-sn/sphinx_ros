@@ -2,8 +2,8 @@
 ``domain`` module
 =================
 
-
 """
+
 from six import iteritems
 from docutils import nodes
 from sphinx.domains import Domain, ObjType
@@ -97,6 +97,8 @@ class RosDomain(Domain):
 
     def resolve_xref(self, env, fromdocname, builder, type, target, node,
                      contnode):
+        """
+        """
         pkgname = node.get('ros:package')
         searchmode = node.hasattr('refspecific') and 1 or 0
 
