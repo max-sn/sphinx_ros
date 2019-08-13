@@ -39,11 +39,10 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
-    'sphinx.ext.coverage',
-    'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
     'sphinxcontrib.plantuml',
     'sphinx_ros',
+    'releases'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -66,6 +65,12 @@ plantuml = 'java -jar "{}"'.format(
 plantuml_output_format = 'svg_obj'
 
 ros_msg_reference_version = 'kinetic'
+
+# TODO adding this will point the 'Next feature release' to the master branch,
+# which is not where I keep the new features. There is a pull request to solve
+# this: https://github.com/bitprophet/releases/pull/54 but the repository has
+# not been touched since January.
+# releases_github_path = 'max-sn/sphinx_ros'
 
 # The master toctree document.
 master_doc = 'index'
