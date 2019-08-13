@@ -20,8 +20,8 @@ message.
 
 :Maintainer: `J. Doe <j.doe@mail.com>`_
 
-:Links: * `Repository <http://github.com/max-sn/sphinx_ros>`_
-        * `Bugtracker <http://github.com/max-sn/sphinx_ros/issues>`_
+:Links: * `Repository <http://github.com/user/repo>`_
+        * `Bugtracker <http://github.com/user/repo/issues>`_
 
 :Version: 1.2
 
