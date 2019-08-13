@@ -238,7 +238,6 @@ class RosType(RosObject):
                                                   pkgname)
         else:
             text = '{} ({})'.format(fullname, self.objtype)
-        print(text)
         return text
 
     def add_target_and_index(self, name, sig, signode):
