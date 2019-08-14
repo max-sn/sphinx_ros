@@ -8,7 +8,7 @@ Sphinx |ROS| extension
     :alt: PyPi version
 
   .. image:: https://img.shields.io/pypi/dm/sphinx-ros
-    :target: https://pypi.org/project/sphinx-ros/
+    :target: https://pypistats.org/packages/sphinx-ros
     :alt: PyPi downloads per month
 
   .. image:: https://img.shields.io/readthedocs/sphinx-ros/latest

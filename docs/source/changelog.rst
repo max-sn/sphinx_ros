@@ -2,6 +2,7 @@
 Change log
 ##########
 
+- :support:`0` Link 'downloads' badge to pipystats.org
 - :feature:`0` Added ``autoros`` functionality, automatically generating ROS
   package documentation, ROS message type documentation, ROS service type
   documentation, and ROS action type documentation.
