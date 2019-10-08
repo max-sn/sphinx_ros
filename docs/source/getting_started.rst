@@ -20,6 +20,20 @@ Configuration
   Can be set to ``False`` to prevent package names from showing in message,
   service, or action type descriptions. Defaults to ``True``.
 
+.. confval:: ros_api_msg_packages
+
+  This is a list of default ROS packages that contain message or service types
+  that are referenced. This enables automatically linking to the ROS
+  documentation. It should be a list of strings containing package names.
+  
+  .. rubric:: Default
+
+  .. code-block:: python
+  
+    ros_api_msg_packages = ['std_msgs', 'geometry_msgs', 'sensor_msgs']
+
+  .. versionadded:: 0.2
+
 
 ==========
 Directives

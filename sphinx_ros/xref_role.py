@@ -16,8 +16,6 @@ class RosXRefRole(XRefRole):
                           'uint32', 'int64', 'uint64', 'float32', 'float64',
                           'string', 'time', 'duration']
 
-    ros_api_pkgs = ['std_msgs', 'geometry_msgs', 'sensor_msgs']
-
     def process_link(self, env, refnode, has_explicit_title, title, target):
         refnode['ros:package'] = env.ref_context.get('ros:package')
         if not has_explicit_title:
@@ -68,7 +66,8 @@ class RosXRefRole(XRefRole):
                 # reference to a standard ROS message type or a custom message
                 # type.
                 pkg, obj = target.split('/')
-                if pkg in self.ros_api_pkgs:
+                ros_api_pkgs = env.config.ros_api_msg_packages
+                if pkg in ros_api_pkgs:
                     # In the former case we link to the API documentation of
                     # ROS.
                     target = 'http://docs.ros.org/' + \

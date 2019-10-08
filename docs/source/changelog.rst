@@ -2,7 +2,8 @@
 Changelog
 #########
 
-- :bug:`0 major` Fixed length arrays are also recognized.
+- :bug:`1 major` Fixed length arrays are also recognized.
+- :feature:`2` Added :confval:`ros_api_msg_packages` configuration value.
 - :support:`0` Link 'downloads' badge to pipystats.org
 - :feature:`0` Added ``autoros`` functionality, automatically generating ROS
   package documentation, ROS message type documentation, ROS service type

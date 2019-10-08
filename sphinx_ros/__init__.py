@@ -24,7 +24,8 @@ def setup(app):
     """
     Adds the ROS domain to the Sphinx application and the labels to the ROS
     indices to the standard domain. It also adds the configuration values
-    :confval:`ros_add_package_names` and :confval:`ros_msg_reference_version`.
+    :confval:`ros_add_package_names`, :confval:`ros_msg_reference_version` and
+    :confval:`ros_api_msg_packages`.
 
     :param app: The Sphinx application
     :type app: sphinx.application.Sphinx
@@ -33,6 +34,9 @@ def setup(app):
 
     app.add_config_value('ros_add_package_names', True, 'html')
     app.add_config_value('ros_msg_reference_version', 'melodic', 'html')
+    app.add_config_value('ros_api_msg_packages', ['std_msgs',
+                                                  'geometry_msgs',
+                                                  'sensor_msgs'], 'html')
 
     StandardDomain.initial_data['labels'].\
         update(RosDomain.initial_data['labels'])
