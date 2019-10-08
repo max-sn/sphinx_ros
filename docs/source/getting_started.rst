@@ -12,13 +12,24 @@ Configuration
 .. confval:: ros_msg_reference_version
 
   The used |ROS| version to use when referencing to default message types, e.g.
-  ``'kinetic'`` or ``'melodic'``. It defaults to ``'melodic'`` and is set to
-  ``'kinetic'`` for this documentation.
+  ``'kinetic'`` or ``'melodic'``. 
+
+  .. rubric:: Default
+  
+  .. code-block:: python
+  
+    ros_msg_reference_version = 'melodic'
 
 .. confval:: ros_add_package_names
 
   Can be set to ``False`` to prevent package names from showing in message,
   service, or action type descriptions. Defaults to ``True``.
+
+  .. rubric:: Default
+  
+  .. code-block:: python
+  
+    ros_add_package_names = True
 
 .. confval:: ros_api_msg_packages
 
@@ -27,7 +38,7 @@ Configuration
   documentation. It should be a list of strings containing package names.
   
   .. rubric:: Default
-
+  
   .. code-block:: python
   
     ros_api_msg_packages = ['std_msgs', 'geometry_msgs', 'sensor_msgs']
@@ -63,7 +74,9 @@ Directives
 
 .. rst:directive:: .. ros:message:: message
 
-  Can be used to describe a message type definition. It will create an index entry and a hyperlink target for this message type. It will also output nodes to describe the message.
+  Can be used to describe a message type definition. It will create an index
+  entry and a hyperlink target for this message type. It will also output
+  nodes to describe the message.
 
   :options: * **noindex** -- Prevents adding the message to the index and
               creating a hyperlink target node.
@@ -151,8 +164,9 @@ Roles
   keeping into account the |ROS| version set by
   :confval:`ros_msg_reference_version`.
 
-  The default |ROS| message packages that are correctly handled as of now are:
-  **std_msgs**, **geometry_msgs**, and **sensor_msgs**.
+  .. versionchanged:: 0.2
+    The default |ROS| message packages can be set with
+    :confval:`ros_api_msg_packages`.
 
 .. rst:role:: ros:srv
 
@@ -190,8 +204,8 @@ documented packages and one for the documented message types.
 
 .. only:: html
 
-  With the ``html`` builder, these can be referenced with ``:ref:`ros-pkgindex``` and ``:ref:`ros-msgindex```
-  respectively.
+  With the ``html`` builder, these can be referenced with
+  ``:ref:`ros-pkgindex``` and ``:ref:`ros-msgindex``` respectively.
 
   * :ref:`ros-pkgindex`
   * :ref:`ros-msgindex`
