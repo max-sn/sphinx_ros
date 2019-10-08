@@ -40,8 +40,11 @@ class RosXRefRole(XRefRole):
             obj_type = node['reftype']
             title = node.astext()
             target = node['reftarget']
-            if target.endswith('[]'):
-                target = target[:-2]
+
+            # Check if target is an (fixed or variable length) array
+            m = re.search(r'\[\d*\]$', target)
+            if m:
+                target = m.string[:m.start()]
 
             # If reference to a ros message, service, or action
             if target in self.ros_msg_primitives:
