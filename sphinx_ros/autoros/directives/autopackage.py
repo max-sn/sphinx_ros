@@ -85,11 +85,15 @@ class RosAutoPackageDirective(Directive):
         return [pkg.name + '/' + os.path.splitext(os.path.basename(action))[0]
                 for action in glob.glob(self.pkg_path + '/action/*.action')]
 
-    def make_literalincluce(self, fn, language='python'):
+    def make_literalinclude(self, fn, language='python'):
         ret = []
+        env = self.state.document.settings.env
         source, _ = self.state_machine.get_source_and_line()
         path = os.path.relpath(self.pkg_path, start=os.path.dirname(source))
-        ret.append('.. literalinclude:: {}/{}'.format(path, fn))
+        file_path = os.path.join(path, fn)
+        _, filename = env.relfn2path(file_path)
+        env.note_included(filename)
+        ret.append('.. literalinclude:: {}'.format(file_path))
         ret.append('  :language: {}'.format(language))
         ret.append('  :linenos:')
         ret.append('')
@@ -284,9 +288,11 @@ class RosAutoPackageDirective(Directive):
             ret.append('')
         ret += self.make_heading('Package definition files', 'chapter')
         ret += self.make_heading('CMakeLists.txt', 'section')
-        ret += self.make_literalincluce('CMakeLists.txt', language='CMake')
+        ret += self.make_literalinclude('CMakeLists.txt',
+                                        language='CMake')
         ret += self.make_heading('package.xml', 'section')
-        ret += self.make_literalincluce('package.xml', language='xml')
+        ret += self.make_literalinclude('package.xml',
+                                        language='xml')
         if 'verbose' in self.options:
             for line in ret:
                 print(line)
