@@ -88,12 +88,14 @@ class RosAutoPackageDirective(Directive):
     def make_literalinclude(self, fn, language='python'):
         ret = []
         env = self.state.document.settings.env
-        source, _ = self.state_machine.get_source_and_line()
-        path = os.path.relpath(self.pkg_path, start=os.path.dirname(source))
-        file_path = os.path.join(path, fn)
-        _, filename = env.relfn2path(file_path)
-        env.note_included(filename)
-        ret.append('.. literalinclude:: {}'.format(file_path))
+        file_path = os.path.relpath(os.path.join(self.pkg_path, fn),
+                                    start=env.srcdir)
+        # Sphinx treats 'absolute' paths as if the root is in the same folder
+        # as the 'conf.py' file, so just make it 'absolute' by adding a "/".
+        abs_file_path = "/" + file_path
+        # Make sure that the included file is noted by Sphinx as included.
+        env.note_included(abs_file_path)
+        ret.append('.. literalinclude:: {}'.format(abs_file_path))
         ret.append('  :language: {}'.format(language))
         ret.append('  :linenos:')
         ret.append('')
