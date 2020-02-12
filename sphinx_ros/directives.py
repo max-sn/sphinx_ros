@@ -57,14 +57,14 @@ class RosObject(ObjectDescription):
     """
     option_spec = {
         'noindex': directives.flag,
-        'package': directives.unchanged,
+        'deprecated': directives.flag
     }
 
     def get_signature_prefix(self, sig):
         """
-        May return a prefix to put before the object name in the signature.
+        Return a prefix to put before the object name in the signature.
         """
-        return ''
+        return self.objtype + ' '
 
     def get_object_type_prefix(self):
         """
@@ -83,99 +83,11 @@ class RosObject(ObjectDescription):
         * it is stripped from the displayed name if present
         * it is added to the full name (return value) if not present
         """
-        m = ros_sig_re.match(sig)
-        if m is None:
-            raise ValueError
-        name_prefix, obj_type, name = m.groups()
-        name_prefix = name_prefix.rstrip('.')
-
-        pkgname = self.options.get(
-            'package', self.env.ref_context.get('ros:package'))
-        if not obj_type:
-            obj_type = self.get_object_type_prefix()
-        if name_prefix and name_prefix.startswith(pkgname):
-            fullname = '.'.join([name_prefix, obj_type, name])
-            name_prefix = name_prefix[len(pkgname):].lstrip('.')
-        elif name_prefix:
-            fullname = '.'.join([pkgname, name_prefix, obj_type, name])
-        else:
-            fullname = '.'.join([pkgname, obj_type, name])
-
-        signode['package'] = pkgname
-        signode['fullname'] = fullname
-
-        sig_prefix = self.get_signature_prefix(sig)
-        if sig_prefix:
-            signode += addnodes.desc_annotation(sig_prefix, sig_prefix)
-
-        if name_prefix:
-            signode += addnodes.desc_addname(name_prefix, name_prefix)
-        elif self.env.config.ros_add_package_names:
-            if pkgname:
-                nodetext = pkgname + '.'
-                if obj_type:
-                    nodetext += obj_type + '.'
-                signode += addnodes.desc_addname(nodetext, nodetext)
-
-        signode += addnodes.desc_name(name, name)
-        return fullname, name_prefix, obj_type
-
-    def get_index_text(self, pkgname, name):
-        """
-        Return the text for the index entry of the object.
-        """
-        raise NotImplementedError('must be implemented in subclasses')
-
-    def add_object_to_domain_data(self, fullname, obj_type):
-        """
-        Add the object to the object lists of the ROS domain data.
-        """
-        raise NotImplementedError('must be implemented in subclasses')
-
-    def add_target_and_index(self, name, sig, signode):
-        pkgname = self.options.get('package',
-                                   self.env.ref_context.get('ros:package'))
-
-        fullname = name[0]
-        obj_type = name[2]
-        # Note target
-        if fullname not in self.state.document.ids:
-            signode['names'].append(fullname)
-            signode['ids'].append(fullname)
-            signode['first'] = (not self.names)
-            self.state.document.note_explicit_target(signode)
-
-            self.add_object_to_domain_data(fullname, obj_type)
-
-            indextext = self.get_index_text(pkgname, name)
-            if sphinx.version_info[:2] >= (1, 4):
-                entry = ('single', indextext, fullname, '',
-                         name_to_key(name[0]))
-            else:
-                entry = ('single', indextext, fullname, '')
-            if indextext:
-                self.indexnode['entries'].append(entry)
-
-
-class RosField(RosXRefMixin, Field):
-    pass
-
-
-class RosTypedField(RosXRefMixin, TypedField):
-    pass
-
-
-class RosType(RosObject):
-    """
-    Super class for messages, services, and actions.
-    """
-
-    def handle_signature(self, sig, signode):
         pkg, name = split_pkg_object(sig, self.get_object_type_prefix())
         env_pkg = self.options.get('package',
                                    self.env.ref_context.get('ros:package'))
         if not pkg == env_pkg:
-            # TODO: issue warning that message is in wrong package
+            # TODO: issue warning that object is in wrong package
             pass
 
         pkg_name = pkg and pkg or env_pkg
@@ -194,28 +106,33 @@ class RosType(RosObject):
         signode += addnodes.desc_name(name, name)
         return fullname, name_prefix, self.objtype, name
 
-    def get_object_type_prefix(self):
-        if self.objtype == 'message':
-            return 'msg'
-        elif self.objtype == 'service':
-            return 'srv'
-        elif self.objtype == 'action':
-            return 'action'
-
-    def get_signature_prefix(self, sig):
-        return self.objtype + ' '
-
     def get_index_text(self, pkgname, name):
+        """
+        Return the text for the index entry of the object.
+        """
         fullname = name[0]
         name_prefix = name[1]
-        obj_type = name[2]
-        newname = name[3]
+        short_name = name[3]
         if pkgname:
-            text = '{} ({} in package {})'.format(newname, self.objtype,
+            text = '{} ({} in package {})'.format(short_name, self.objtype,
                                                   pkgname)
         else:
             text = '{} ({})'.format(fullname, self.objtype)
         return text
+
+    def add_object_to_domain_data(self, fullname, obj_type):
+        """
+        Add the object to the object lists of the ROS domain data.
+        """
+        objects = self.env.domaindata['ros']['objects']
+        if fullname in objects:
+            self.state_machine.reporter.warning(
+                'duplicate object description of %s, ' % fullname +
+                'other instance in ' +
+                self.env.doc2path(objects[fullname][0]) +
+                ', use :noindex: for one of them',
+                line=self.lineno)
+        objects[fullname] = (self.env.docname, self.objtype)
 
     def add_target_and_index(self, name, sig, signode):
         pkgname = self.options.get('package',
@@ -241,18 +158,24 @@ class RosType(RosObject):
                 entry = [('single', indextext, short_name, '')]
             if indextext:
                 self.indexnode['entries'] += entry
-                # self.indexnode['entries'].append(entry)
 
-    def add_object_to_domain_data(self, fullname, obj_type):
-        objects = self.env.domaindata['ros']['objects']
-        if fullname in objects:
-            self.state_machine.reporter.warning(
-                'duplicate object description of %s, ' % fullname +
-                'other instance in ' +
-                self.env.doc2path(objects[fullname][0]) +
-                ', use :noindex: for one of them',
-                line=self.lineno)
-        objects[fullname] = (self.env.docname, self.objtype)
+
+class RosField(RosXRefMixin, Field):
+    pass
+
+
+class RosTypedField(RosXRefMixin, TypedField):
+    pass
+
+
+class RosType(RosObject):
+    """
+    Super class for messages, services, and actions.
+
+    #TODO A lot of methods should be moved to RosObject, to simplify. RegEx in 
+        RosObject is not needed.
+    """
+    pass
 
 
 class RosCurrentPackageDirective(Directive):
@@ -342,6 +265,9 @@ class RosActionDirective(RosType):
                       can_collapse=True)
     ]
 
+    def get_object_type_prefix(self):
+        return 'action'
+
 
 class RosServiceDirective(RosType):
     """
@@ -363,18 +289,14 @@ class RosServiceDirective(RosType):
                       can_collapse=True)
     ]
 
+    def get_object_type_prefix(self):
+        return 'srv'
+
 
 class RosMessageDirective(RosType):
     """
     Description of a ROS message type.
     """
-
-    option_spec = {
-        'noindex': directives.flag,
-        'package': directives.unchanged,
-        'deprecated': directives.flag,
-    }
-    # option_spec['deprecated'] = directives.flag
 
     doc_field_types = [
         RosTypedField('parameter',
@@ -385,6 +307,47 @@ class RosMessageDirective(RosType):
                       can_collapse=True),
     ]
 
+    def get_object_type_prefix(self):
+        return 'msg'
+
     def add_object_to_domain_data(self, fullname, obj_type):
+        super(RosMessageDirective, self).add_object_to_domain_data(fullname,
+                                                                   obj_type)
         ros_domain = self.env.get_domain('ros')
         ros_domain.add_message(fullname, 'deprecated' in self.options)
+
+
+class RosNodeDirective(RosObject):
+    """
+    Description of a ROS node.
+    """
+
+    doc_field_types = [
+        RosTypedField('publisher',
+                      label='Publishers',
+                      names=('publisher',),
+                      typerolename='obj',
+                      typenames=('publisher_msgtype',),
+                      can_collapse=True),
+        RosTypedField('subscriber',
+                      label='Subscribers',
+                      names=('subscriber',),
+                      typerolename='ros:msg',
+                      typenames=('subscriber_msgtype',),
+                      can_collapse=True),
+        RosTypedField('service',
+                      label='Services',
+                      names=('service',),
+                      typerolename='ros:srv',
+                      typenames=('service_srvtype',),
+                      can_collapse=True)
+    ]
+
+    def get_object_type_prefix(self):
+        return 'node'
+
+    def add_object_to_domain_data(self, fullname, obj_type):
+        super(RosNodeDirective, self).add_object_to_domain_data(fullname,
+                                                                obj_type)
+        ros_domain = self.env.get_domain('ros')
+        ros_domain.add_node(fullname, 'deprecated' in self.options)

@@ -12,12 +12,14 @@ from docutils import nodes
 from sphinx.domains import Domain, ObjType
 from sphinx.util.nodes import make_refnode
 from .xref_role import RosXRefRole
-from .directives import RosPackageDirective, RosCurrentPackageDirective, \
-    RosMessageDirective, RosActionDirective, RosServiceDirective
+from .directives import (
+    RosPackageDirective, RosCurrentPackageDirective, RosMessageDirective,
+    RosActionDirective, RosServiceDirective, RosNodeDirective)
 from .indices import RosPackageIndex, RosMessageIndex
 
-from .autoros.directives import RosAutoActionDirective, \
-    RosAutoMessageDirective, RosAutoServiceDirective, RosAutoPackageDirective
+from .autoros.directives import (
+    RosAutoActionDirective, RosAutoMessageDirective, RosAutoServiceDirective,
+    RosAutoPackageDirective)
 
 
 class RosDomain(Domain):
@@ -29,13 +31,15 @@ class RosDomain(Domain):
     object_types = {
         'message':   ObjType('message', 'msg', 'obj'),
         'service':   ObjType('service', 'srv', 'obj'),
-        'action':    ObjType('action', 'action', 'obj')
+        'action':    ObjType('action', 'action', 'obj'),
+        'node':     ObjType('node', 'node', 'obj')
     }
     roles = {
         'pkg': RosXRefRole(),
         'msg': RosXRefRole(),
         'srv': RosXRefRole(),
-        'act': RosXRefRole()
+        'act': RosXRefRole(),
+        'node': RosXRefRole()
     }
     directives = {
         'package':          RosPackageDirective,
@@ -43,6 +47,7 @@ class RosDomain(Domain):
         'message':          RosMessageDirective,
         'service':          RosServiceDirective,
         'action':           RosActionDirective,
+        'node':             RosNodeDirective,
         'autopackage':      RosAutoPackageDirective,
         'automessage':      RosAutoMessageDirective,
         'autoservice':      RosAutoServiceDirective,
@@ -52,6 +57,7 @@ class RosDomain(Domain):
         'objects': {},   # fullname -> docname, objtype
         'packages': {},  # name -> document name, anchor, priority, deprecated
         'messages': {},  # name -> document name, anchor, priority, deprecated
+        'nodes': {},     # name -> document name, anchor, priority, deprecated
         'labels': {
             'ros-pkgindex': ('ros-pkgindex', '', 'Package Index'),
             'ros-msgindex': ('ros-msgindex', '', 'Message Type Index')
@@ -188,5 +194,6 @@ class RosDomain(Domain):
     def add_message(self, name, deprecated):
         # name -> document name, anchor, priority, deprecated
         self.data['messages'][name] = (self.env.docname, name, 0, deprecated)
-        self.data['objects'][name] = (self.env.docname, 'message')
-        return name
+
+    def add_node(self, name, deprecated):
+        self.data['nodes'][name] = (self.env.docname, name, 0, deprecated)
