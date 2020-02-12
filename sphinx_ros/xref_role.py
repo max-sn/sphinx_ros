@@ -34,7 +34,7 @@ class RosXRefRole(XRefRole):
         return title, target
 
     def result_nodes(self, document, env, node, is_ref):
-        if node['reftype'] in ['msg', 'srv', 'action']:
+        if node['reftype'] in ['msg', 'srv', 'action', 'node']:
             obj_type = node['reftype']
             title = node.astext()
             target = node['reftarget']
@@ -43,7 +43,7 @@ class RosXRefRole(XRefRole):
             m = re.search(r'\[\d*\]$', target)
             if m:
                 target = m.string[:m.start()]
-
+            #TODO This should only be checked for message types
             # If reference to a ros message, service, or action
             if target in self.ros_msg_primitives:
                 # If the target is a ROS message primitive then don't add a

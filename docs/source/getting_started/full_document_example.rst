@@ -71,9 +71,9 @@ Services
   :resp_paramtype highway: :ros:msg:`uint16`
 
 
-********
+*******
 Actions
-********
+*******
 
 .. ros:action:: FooBar
 
@@ -86,3 +86,17 @@ Actions
   :feedback_paramtype tracking_error: :ros:msg:`geometry_msgs/Point`
   :feedback_param power: Current power usage per joint.
   :feedback_paramtype power: :ros:msg:`float32[]`
+
+
+*****
+Nodes
+*****
+
+.. ros:node:: bar_foo
+
+  :publisher /bar/foo: Publishes the foo to the bar.
+  :publisher_msg_type /far/boo: :ros:msg:`geometry_msgs/Point`
+  :subscriber /bar/foo: Subscribes to the bar, to listen for foo.
+  :subscriber_msg_type /far/boo: :ros:msg:`geometry_msgs/Point`
+  :service /set_foo: Sets the foo.
+  :service_type /set_foo: :ros:srv:`~sphinx_ros_example/Bar`

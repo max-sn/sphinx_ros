@@ -121,6 +121,33 @@ Directives
   result. ``:feedback_param <name>:`` and ``:feedback_paramtype <name>:`` do
   the same for the action's feedback.
 
+
+.. rst:directive:: .. ros:node:: node
+
+  Can be used to describe a ROS node.
+
+  :options: * **noindex** -- Prevents creating a hyperlink target node for the 
+              node.
+            * **deprecated** -- Flags the node as deprecated.
+
+  Three pairs of flags are recognized in this directive's content:
+  ``:publisher <topic>: <description>`` and
+  ``:publisher_msg_type <topic>: <msg_type>``,
+  ``:subscriber <topic>: <description>`` and
+  ``:subscriber_msg_type <topic>: <msg_type>``,
+  ``:service <name>: <description>`` and ``:service_type <name>: <srv_type>``.
+  With the first, publishers can be documented with the topics they publish on,
+  as well as the message type that the topic expects. The second acts similar
+  for subscribers, and with the last you can document services that the node
+  provides, with their name and required service type.
+
+  .. versionadded:: 0.2
+
+
+***********
+``autoros``
+***********
+
 .. rst:directive:: .. ros:automessage:: message
 
   .. todo:: Add description.
@@ -179,6 +206,13 @@ Roles
   Can be used to reference a defined action type. Adding the ``~`` prefix to
   the action name will let it print *only* the action name and not the package
   name.
+
+.. rst:role:: ros:node
+
+  Can be used to reference a defined ROS node. Addding the ``~`` prefix to the
+  node name will let it print *only* the node name and not the package name.
+
+  .. versionadded:: 0.2
 
 
 ===============

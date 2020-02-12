@@ -2,6 +2,8 @@
 Changelog
 #########
 
+- :feature:`0` Added the :rst:dir:`ros:node` directive to document nodes and
+  the :rst:role:`ros:node` role to reference them.
 - :bug:`1 major` Fixed length arrays are also recognized.
 - :feature:`2` Added :confval:`ros_api_msg_packages` configuration value.
 - :support:`0` Link 'downloads' badge to pipystats.org
